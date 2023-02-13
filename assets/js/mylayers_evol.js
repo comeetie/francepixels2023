@@ -16,7 +16,7 @@ var mylayers_evol = [
       },
       {
       type: 'step',
-      expression :  ['-',['*',['/',['to-number',['get',`ind_2017`]],['get', 'area']],100000],['*',['/',['to-number',['get',`ind_2015`]],['get', 'area']],100000]],
+      expression :  ['-',['*',['/',['to-number',['get',`ind_2017`]],['get', 'area']],1000000],['*',['/',['to-number',['get',`ind_2015`]],['get', 'area']],1000000]],
       cols : colorbrewer["RdYlGn"][8],
       name:"ind",
       denom:"area",
@@ -24,7 +24,7 @@ var mylayers_evol = [
       visibility:'visible',
       steps:[-1000,-500,-250,-100,0,100,250,500,1000],
       text:`Densité de population`,
-      unit: 'hab/Km2',
+      unit: 'hab/Km<span class="sup">2</span>',
       format:function(d){return Math.round(d)},
       group:'pop'
     },

@@ -158,7 +158,11 @@ justify-content: space-between;
 }
 
 
-
+.sup{
+  position: relative;
+  bottom: 1ex; 
+  font-size: 80%;
+}
 
 /* ---------------------------------------------------
     CONTENT STYLE

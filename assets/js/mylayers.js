@@ -15,7 +15,7 @@ var mylayers = ["2015","2017"].map(year => ([
       },
       {
       type: 'step',
-      expression :  ['*',['/',['to-number',['get',`ind_${year}`]],['get', 'area']],100000],
+      expression :  ['*',['/',['to-number',['get',`ind_${year}`]],['get', 'area']],1000000],
       cols : colorbrewer["YlOrRd"][8],
       name:"ind",
       denom:"area",

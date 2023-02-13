@@ -26,8 +26,8 @@ map.addControl(nav, 'top-right');
 
 
 
-var roadsLayers      = ["tunnel_motorway_casing", "aeroway-taxiway", "aeroway-runway-casing",  "aeroway-runway", "highway_minor", "highway_major_casing", "highway_major_inner","highway_motorway_casing", "highway_motorway_inner", "railway_transit", "railway_transit_dashline", "railway_service", "railway_service_dashline", "railway", "railway_dashline","highway_motorway_bridge_casing", "highway_motorway_bridge_inner",  "highway_name_other", "highway_name_motorway"]
-var labelsLayers     = ["place_state","place_village","place_town","place_city","place_capital","place_city_large", "place_country_other","place_country_minor","place_country_major"]
+var roadsLayers      = ["tunnel_motorway_casing","tunnel_motorway_inner", "aeroway-taxiway", "aeroway-runway-casing",  "aeroway-runway", "highway_minor", "highway_major_casing", "highway_major_inner","highway_motorway_casing", "highway_motorway_inner", "railway_transit", "railway_transit_dashline", "railway_service", "railway_service_dashline", "railway", "railway_dashline","highway_motorway_bridge_casing", "highway_motorway_bridge_inner",  "highway_name_other", "highway_name_motorway"]
+var labelsLayers     = ["place_state","place_village","place_town","place_city","place_capital","place_city_large"]
 var boundariesLayers = ["boundary_fr_dep","boundary_fr_com","boundary_fr"]
 var landcoverLayers = ["park","landcover_glacier","landcover_wood","landcover_wood-copy"]
 
@@ -43,7 +43,7 @@ function extract_value(l,properties){
 				v=properties[`${l.denom}_${l.name}_2017`]/properties[`men_2017`]-properties[`${l.denom}_${l.name}_2015`]/properties[`men_2015`]
 				break;
 				case "area":
-				v=(properties[`ind_2017`]/properties['area']*100000)-(properties[`ind_2015`]/properties['area']*100000)
+				v=(properties[`ind_2017`]/properties['area']*1000000)-(properties[`ind_2015`]/properties['area']*1000000)
 				break;
 				default:
 				v=properties[`${l.denom}_${l.name}_2017`]/properties[`${l.denom}_2017`]-properties[`${l.denom}_${l.name}_2015`]/properties[`${l.denom}_2015`]
@@ -55,7 +55,7 @@ function extract_value(l,properties){
 				v=properties[`${l.denom}_${l.name}_${l.year}`]/properties[`men_${l.year}`]
 				break;
 				case "area":
-				v=properties[`ind_${l.year}`]/properties['area']*100000
+				v=properties[`ind_${l.year}`]/properties['area']*1000000
 				break;
 				default:
 				v=properties[`${l.denom}_${l.name}_${l.year}`]/properties[`${l.denom}_${l.year}`]
@@ -83,7 +83,7 @@ Promise.all(promises).then(function(values){
     case "area":
       numerator=numerator.split("_")[1];
       q = [0.000,0.125,0.250,0.375,0.500,0.625,0.750,0.875,1.000]
-        .map(q => d3.quantile(datasample1000,q, r=> r[`${numerator}_${year}`]/(200*200)*100000))
+        .map(q => d3.quantile(datasample1000,q, r=> r[`${numerator}_${year}`]/(200*200)*1000000))
       break;
     case "log":
       let vals =  datasample1000.map(r=> r[`${numerator}_${year}`]/r[`men_${year}`]).filter(v=>v!=0 && v!=1)
@@ -170,8 +170,8 @@ Promise.all(promises).then(function(values){
 
     map.addSource('point',{
         type: 'vector',
-        //url: 'https://www.comeetie.fr/tileserver-php/tileserver.php?/inseedata20152017allregcirclenew.json',
-        tiles:["https://www.comeetie.fr/tileserver-php/tileserver.php?/inseedata20152017allregcirclenew.json?/inseedata20152017allregcirclenew/{z}/{x}/{y}.pbf"],
+        //url: 'https://www.comeetie.fr/tileserver-php/tileserver.php?/inseedata20152017allregcircle.json',
+        tiles:["https://www.comeetie.fr/tileserver-php/tileserver.php?/inseedata20152017allregcircle.json?/inseedata20152017allregcircle/{z}/{x}/{y}.pbf"],
         promoteId:{"inseedata20152017allregcircle": "id"},
         maxzoom:11,
     })
@@ -207,7 +207,7 @@ Promise.all(promises).then(function(values){
               "source": "point",
               "source-layer": "inseedata20152017allregcircle",
               "paint": {
-                  "circle-radius":['*',['^',['min',['*',['/',['to-number',['get',`${cdenom}_${cyear}`]],['get', 'area']],100000],100],0.5],0.6],
+                  "circle-radius":['*',['^',['min',['*',['/',['to-number',['get',`${cdenom}_${cyear}`]],['get', 'area']],1000000],1000],0.5],0.1897367],
                   "circle-color":l.coloramp,
                   'circle-opacity': ['case',['boolean', ['feature-state', 'hover'], false],0.05,1]
               },
@@ -394,7 +394,7 @@ function changeLayer(new_layer){
       l.visibility="visible";
       $('#'+l.name+'_'+l.year+'-div').css('display', "block");
       
-      let leg_circle = l.denom=="men"|l.denom=="log"?"en (Men/Km2)":"en (Hab/Km2)";
+      let leg_circle = l.denom=="men"|l.denom=="log"?"en (Men/Km<span class='sup'>2</span>)":"en (Hab/Km<span class='sup'>2</span>)";
       d3.select("#circle-unit").text(leg_circle)
     }else{
       map.setLayoutProperty(l.name+'_'+l.year+bool_circle, 'visibility', 'none');
@@ -470,10 +470,17 @@ function togeoJson(feat){
 
 // recupération des tuiles affichées et conversion en geojson
 function exportData(){
-	car=map.querySourceFeatures("carreaux",{
+  if(document.getElementById('geomcheck').checked){
+    car=map.querySourceFeatures("point",{
             sourceLayer: 'inseedata20152017allregcircle',
             filter: ['all']
-        })
+    })
+  }else{
+        car=map.querySourceFeatures("carreaux",{
+            sourceLayer: 'inseedata20152017allreg',
+            filter: ['all']
+    })
+  }
 	return {features:togeoJson(car),type:"FeatureCollection"}
 }
 
@@ -481,7 +488,7 @@ function exportData(){
 function download_file(name, jsonData ){
 	console.log("download")
 	// nom du fichier
-  var format = d3.timeFormat("%d-%m-%Y-%H-%M")
+  var format = d3.timeFormat("%d-%m-%Y-%H-%M-%S")
 	let d = new Date();
 	name = `francepixels_${$('#vars').find(":selected").val()}_${format(d)}.geojson`
 
