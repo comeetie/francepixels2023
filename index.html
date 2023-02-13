@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>France Pixel 2023</title>
+
+
+
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap&family=Signika+Negative:wght@600&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <!-- Map Libre CSS -->
+    <!--<link href='./assets/js/maplibre-gl.css' rel='stylesheet' />-->
+    
+    <link href='https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css' rel='stylesheet' />
+    <script src='./assets/js/colorbrewer.js'></script>
+    <!-- Our Custom CSS -->
+    <link rel="stylesheet" href="./assets/css/style-responsive.css">
+
+    <!-- Font Awesome JS -->
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+
+
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <!-- Sidebar Holder -->
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <h1>Francepixel <sup>(2023)</sup></h1>
+                <p>Naviguer dans les données carroyées de l'insee.</p>
+                source : @insee: (<a href="https://https://www.insee.fr/fr/statistiques/4176290?sommaire=4176305" style="display:inline">Filosofi 2015</a>,<a href="https://www.insee.fr/fr/statistiques/6215138?sommaire=6215217" style="display:inline"> Filosofi 2017</a>)</br>
+                <a href="https://mapstodon.space/@comeetie">by : @comeetie@mapstodon.space (2023)</a>
+
+            </div>
+            <div class="container-fluid">
+            <div class="row">
+                <div class="col  mb-3">
+                  <h4> Millésimes </h4>
+                  <div class="input-group" style="width:95%">
+                    <select onchange="changeYear(this.value);" class="custom-select" id="years">
+                      <option value="2017" selected>2017</option>
+                      <option value="2015">2015</option>
+                      <option value="evol">Evolution 2015&#x2192;2017</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col  mb-3">
+                  <h4> Variables </h4>
+                  <div class="input-group" style="width:95%">
+                    <select onchange="changeLayer(this.value);" class="custom-select" id="vars" >
+                    </select>
+                  </div>
+                </div>
+              </div>
+    
+                  <div class="row">
+                    <div class="col">
+                    <div id="layers-controls">
+                    </div>
+                  </div>
+                  </div>
+                  
+                  <div class="row">
+                    <div class="col">
+                              <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" id="geomcheck" onchange="changeGeom()" checked>
+                  <label class="form-check-label" for="geomcheck">
+                      Cercles proportionels      
+                  </label>
+              </div>
+                  	<div class="container" style="width:60%"> 
+                  		<div class="legendItem-circles">
+                  			<div style="width: 2px; height: 2px;"></div>
+                  			<div style="width: 4px; height: 4px;"></div>
+                  			<div style="width: 6px; height: 6px;"></div>
+                  			<div style="width: 8px; height: 8px;"></div>
+                  			<div style="width: 10px; height: 10px;"></div>
+                  			<div style="width: 12px; height: 12px;"></div>
+                  		</div> 
+                  		<div class="legendItem-labels">
+                  			<div style="color:#ffffff">.</div>
+                  			<div style="color:#ffffff">.</div>
+                  			<div>25</div>
+                  			<div style="color:#ffffff">.</div>
+                  			<div style="color:#ffffff">.</div>
+                  			<div>>100</div>
+                  		</div>
+                  	</div>
+                  	<div style="text-align:right;width:95%"><label class="legend-label" id="circle-unit">en (Hab/Km2)</label></div>
+                  </div>
+                  </div>
+                  
+                  
+              <div class="row">
+                <div class="col">
+                  <h4>Couches</h4>
+
+
+   
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" id="labels" onchange="updateLayers()" checked>
+                      <label class="form-check-label" for="labels">
+                        Labels
+                      </label>
+                    </div>
+
+
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" id="boundaries" onchange="updateLayers()" checked>
+                      <label class="form-check-label" for="boundaries">
+                        Limites Administratives
+                      </label>
+                    </div>
+
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" id="roads" onchange="updateLayers()" >
+                      <label class="form-check-label" for="roads">
+                        Réseau routier
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" id="landcovers" onchange="updateLayers()" >
+                      <label class="form-check-label" for="landcovers">
+                        Couverture du sol
+                      </label>
+                    </div>
+                    Ajoutez votre propre couche de polygones :
+                    <input type="file" id="file"name="file" accept="application/geo+json,application/vnd.geo+json,.geojson" class="btn btn-sm"/>
+            	</div>
+              </div>
+              <div class="row">
+                <div class="col">          
+              	<h4> Données </h4>
+		Vous pouvez télécharger les données de la vue courante : 
+		<p style="text-align:center;margin-top:0.4em"><button onclick='download_file("data.json", exportData())' class="btn btn-sm "> Télécharger (geojson)</button></p>
+		</div>
+              </div>
+            </br>
+              <div class="row">
+                <div class="col" id="sidebarClose-col">
+                <p style="text-align:center;margin-top:0.4em"><button class="btn btn-sm" href="#" role="button" id="sidebarClose">Ok</button></p>
+                </div>
+              </div>
+
+            </div>
+
+        </nav>
+
+        <!-- Page Content Holder -->
+
+
+        <div id="content">
+          <div id="map"></div>
+          <button type="button" id="sidebarCollapse" class="btn btn-light">
+                <i class="fas fa-times" id="sidebarCollapseIcon"></i>
+          </button>
+        </div>
+
+    <!-- jQuery CDN - Slim version (=without AJAX) -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <!-- Popper.JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+    <!-- Main App -->
+    <script src="assets/js/d3/d3.min.js"></script>
+    <!--<script src='./assets/js/maplibre-gl.js'></script>-->
+    <script src='https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js'></script>
+    <script src="assets/js/mylayers.js"> </script>
+    <script src="assets/js/mylayers_evol.js"> </script>
+    <script src="assets/js/app.js"> </script>
+
+
+
+    <script type="text/javascript">
+
+
+
+        $(document).ready(function () {
+              window.addEventListener('resize', function(event){
+                  console.log("resize")
+                  setTimeout(function (){
+                    map.resize();
+                  },1000)
+              });
+
+              setTimeout(function (){
+              if ($(window).width() > 768) {
+                console.log("big")
+                $('#sidebarCollapseIcon').removeClass('fa-cog');
+                $('#sidebarCollapseIcon').removeClass('fa-times');
+                $('#sidebarCollapseIcon').addClass('fa-times');
+              } else {
+                console.log("small")
+                $('#sidebarCollapseIcon').removeClass('fa-cog');
+                $('#sidebarCollapseIcon').removeClass('fa-times');
+                $('#sidebarCollapseIcon').addClass('fa-cog');
+              }
+            },1000)
+
+
+
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').toggleClass('active');
+
+                $(this).toggleClass('active');
+
+
+                $('#content').toggleClass('inactive');
+
+                if($("#sidebar").attr("class")=="active"){
+                  $('#sidebarCollapseIcon').removeClass('fa-cog');
+                  $('#sidebarCollapseIcon').removeClass('fa-times');
+                  $('#sidebarCollapseIcon').addClass('fa-cog');
+                }else{
+                  $('#sidebarCollapseIcon').removeClass('fa-cog');
+                  $('#sidebarCollapseIcon').removeClass('fa-times');
+                  $('#sidebarCollapseIcon').addClass('fa-times');
+                }
+                setTimeout(function (){
+                                    map.resize();
+                }, 1000);
+
+            });
+            $('#sidebarClose').on('click', function () {
+                $('#sidebar').toggleClass('active');
+                $("#sidebarCollapse").toggleClass('active');
+                $('#content').toggleClass('inactive');
+                if($("#sidebar").attr("class")=="active"){
+                  $('#sidebarCollapseIcon').removeClass('fa-cog');
+                  $('#sidebarCollapseIcon').removeClass('fa-times');
+                  $('#sidebarCollapseIcon').addClass('fa-times');
+                }else{
+                  $('#sidebarCollapseIcon').removeClass('fa-cog');
+                  $('#sidebarCollapseIcon').removeClass('fa-times');
+                  $('#sidebarCollapseIcon').addClass('fa-cog');
+                }
+                setTimeout(function (){
+                                    map.resize();
+                }, 1000);
+            });
+        });
+    </script>
+
+
+</body>
+
+</html>
