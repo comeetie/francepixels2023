@@ -395,7 +395,7 @@ function changeLayer(new_layer){
       $('#'+l.name+'_'+l.year+'-div').css('display', "block");
       
       let leg_circle = l.denom=="men"|l.denom=="log"?"en (Men/Km<span class='sup'>2</span>)":"en (Hab/Km<span class='sup'>2</span>)";
-      d3.select("#circle-unit").text(leg_circle)
+      d3.select("#circle-unit").html(leg_circle)
     }else{
       map.setLayoutProperty(l.name+'_'+l.year+bool_circle, 'visibility', 'none');
       l.visibility="none";
