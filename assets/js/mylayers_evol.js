@@ -41,7 +41,7 @@ var mylayers_evol = [
       visibility:'visible',
       text:`Ménages pauvre`,
       unit: 'pts de %',
-      format:function(d){return Math.round(d*100)},
+      format:function(d){return Math.round(d*1000)/10},
       group:'eco',
       filter:["all",["!=",['get', 'men_2015'],0],["!=",['get', 'men_2017'],0]]
     },
@@ -56,7 +56,7 @@ var mylayers_evol = [
         visibility:'visible',
         text:`Familles monoparentales`,
         unit:"pts de %",
-        format:function(d){return Math.round(d*100)},
+        format:function(d){return Math.round(d*1000)/10},
         group:'pop',
       filter:["all",["!=",['get', 'men_2015'],0],["!=",['get', 'men_2017'],0]]
       },
@@ -71,7 +71,7 @@ var mylayers_evol = [
         visibility:'visible',
         text:`Ménages de 5 individus ou plus`,
         unit:"pts de %",
-        format:function(d){return Math.round(d*100)},
+        format:function(d){return Math.round(d*1000)/10},
         group:'pop',
       filter:["all",["!=",['get', 'men_2015'],0],["!=",['get', 'men_2017'],0]]
       },
@@ -86,7 +86,7 @@ var mylayers_evol = [
         visibility:'visible',
         text:`Ménages de 1 individus`,
         unit:"pts de %",
-        format:function(d){return Math.round(d*100)},
+        format:function(d){return Math.round(d*1000)/10},
         group:'pop',
       filter:["all",["!=",['get', 'men_2015'],0],["!=",['get', 'men_2017'],0]]
       },
@@ -101,7 +101,7 @@ var mylayers_evol = [
       text:`Ménages propriétaires`,
       steps:[-0.25,-0.10,-0.05,-0.02,0,0.02,0.05,0.10,0.25],
       unit:"pts de %",
-      format:function(d){return Math.round(d*100)},
+      format:function(d){return Math.round(d*1000)/10},
       group:'log',
       filter:["all",["!=",['get', 'men_2015'],0],["!=",['get', 'men_2017'],0]]
     },
@@ -116,7 +116,7 @@ var mylayers_evol = [
       visibility:'visible',
       text:`Ménages en logement collectifs`,
       unit:"pts de %",
-      format:function(d){return Math.round(d*100)},
+      format:function(d){return Math.round(d*1000)/10},
       group:'log',
       filter:["all",["!=",['get', 'men_2015'],0],["!=",['get', 'men_2017'],0]]
     },
@@ -131,7 +131,7 @@ var mylayers_evol = [
       visibility:'visible',
       text:`Ménages en maison individuelle`,
       unit:"pts de %",
-      format:function(d){return Math.round(d*100)},
+      format:function(d){return Math.round(d*1000)/10},
       group:'log',
       filter:["all",["!=",['get', 'men_2015'],0],["!=",['get', 'men_2017'],0]]
     },
@@ -146,7 +146,7 @@ var mylayers_evol = [
       visibility:'visible',
       text:`Ménages en logement social`,
       unit:"pts de %",
-      format:function(d){return Math.round(d*100)},
+      format:function(d){return Math.round(d*1000)/10},
       group:'log',
       filter:["all",["!=",['get', 'men_2015'],0],["!=",['get', 'men_2017'],0]]
     },
@@ -177,7 +177,7 @@ var mylayers_evol = [
       visibility:'visible',
       text:`Logements construits avant 1945`,
       unit:"pts de %",
-      format:function(d){return Math.round(d*100)},
+      format:function(d){return Math.round(d*1000)/10},
       group:'log',
       filter:["all",["!=",['get', 'men_2015'],0],["!=",['get', 'men_2017'],0]]
     },
@@ -192,7 +192,7 @@ var mylayers_evol = [
       visibility:'visible',
       text:`Logements construits entre 1945 et 1970`,
       unit:"pts de %",
-      format:function(d){return Math.round(d*100)},
+      format:function(d){return Math.round(d*1000)/10},
       group:'log',
       filter:["all",["!=",['get', 'men_2015'],0],["!=",['get', 'men_2017'],0]]
     },
@@ -207,7 +207,7 @@ var mylayers_evol = [
       visibility:'visible',
       text:`Logements construits entre 1970 et 1990`,
       unit:"pts de %",
-      format:function(d){return Math.round(d*100)},
+      format:function(d){return Math.round(d*1000)/10},
       group:'log',
       filter:["all",["!=",['get', 'men_2015'],0],["!=",['get', 'men_2017'],0]]
     },
@@ -223,7 +223,7 @@ var mylayers_evol = [
       visibility:'visible',
       text:`Logements construits après 1990`,
       unit:"pts de %",
-      format:function(d){return Math.round(d*100)},
+      format:function(d){return Math.round(d*1000)/10},
       group:'log',
       filter:["all",["!=",['get', 'men_2015'],0],["!=",['get', 'men_2017'],0]]
     },
@@ -238,7 +238,7 @@ var mylayers_evol = [
       visibility:'visible',
       text:`0 - 3 ans`,
       unit:"pts de %",
-      format:function(d){return Math.round(d*100)},
+      format:function(d){return Math.round(d*1000)/10},
       group:'log',
       filter:["all",["!=",['get', 'ind_2015'],0],["!=",['get', 'ind_2017'],0]]
     }
@@ -254,7 +254,7 @@ var mylayers_evol = [
       visibility:'visible',
       text:`4 - 5 ans`,
       unit:"pts de %",
-      format:function(d){return Math.round(d*100)},
+      format:function(d){return Math.round(d*1000)/10},
       group:'log',
       filter:["all",["!=",['get', 'ind_2015'],0],["!=",['get', 'ind_2017'],0]]
     },
@@ -269,7 +269,7 @@ var mylayers_evol = [
       visibility:'visible',
       text:`6 - 10 ans`,
       unit:"pts de %",
-      format:function(d){return Math.round(d*100)},
+      format:function(d){return Math.round(d*1000)/10},
       group:'log',
       filter:["all",["!=",['get', 'ind_2015'],0],["!=",['get', 'ind_2017'],0]]
     },
@@ -284,7 +284,7 @@ var mylayers_evol = [
       visibility:'visible',
       text:`11 - 17 ans`,
       unit:"pts de %",
-      format:function(d){return Math.round(d*100)},
+      format:function(d){return Math.round(d*1000)/10},
       group:'log',
       filter:["all",["!=",['get', 'ind_2015'],0],["!=",['get', 'ind_2017'],0]]
     },
@@ -299,7 +299,7 @@ var mylayers_evol = [
       visibility:'visible',
       text:`18 - 24 ans`,
       unit:"pts de %",
-      format:function(d){return Math.round(d*100)},
+      format:function(d){return Math.round(d*1000)/10},
       group:'log',
       filter:["all",["!=",['get', 'ind_2015'],0],["!=",['get', 'ind_2017'],0]]
     },
@@ -314,7 +314,7 @@ var mylayers_evol = [
       visibility:'visible',
       text:`25 - 39 ans`,
       unit:"pts de %",
-      format:function(d){return Math.round(d*100)},
+      format:function(d){return Math.round(d*1000)/10},
       group:'log',
       filter:["all",["!=",['get', 'ind_2015'],0],["!=",['get', 'ind_2017'],0]]
     },
@@ -329,7 +329,7 @@ var mylayers_evol = [
       visibility:'visible',
       text:`40 - 54 ans`,
       unit:"pts de %",
-      format:function(d){return Math.round(d*100)},
+      format:function(d){return Math.round(d*1000)/10},
       group:'log',
       filter:["all",["!=",['get', 'ind_2015'],0],["!=",['get', 'ind_2017'],0]]
     },
@@ -344,7 +344,7 @@ var mylayers_evol = [
       visibility:'visible',
       text:`55 - 64 ans`,
       unit:"pts de %",
-      format:function(d){return Math.round(d*100)},
+      format:function(d){return Math.round(d*1000)/10},
       group:'log',
       filter:["all",["!=",['get', 'ind_2015'],0],["!=",['get', 'ind_2017'],0]]
     },
@@ -359,7 +359,7 @@ var mylayers_evol = [
       visibility:'visible',
       text:`65 - 79 ans`,
       unit:"pts de %",
-      format:function(d){return Math.round(d*100)},
+      format:function(d){return Math.round(d*1000)/10},
       group:'log',
       filter:["all",["!=",['get', 'ind_2015'],0],["!=",['get', 'ind_2017'],0]]
     },
@@ -374,7 +374,7 @@ var mylayers_evol = [
       visibility:'visible',
       text:`Plus de 80 ans`,
       unit:"pts de %",
-      format:function(d){return Math.round(d*100)},
+      format:function(d){return Math.round(d*1000)/10},
       group:'log',
       filter:["all",["!=",['get', 'ind_2015'],0],["!=",['get', 'ind_2017'],0]]
     }
