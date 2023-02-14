@@ -318,8 +318,8 @@ Promise.all(promises).then(function(values){
 
     map.addSource('carreaux',{
         type: 'vector',
-        tiles:["https://www.comeetie.fr/tileserver-php/tileserver.php?/inseedata20152017.json?/inseedata20152017/{z}/{x}/{y}.pbf"],
-        promoteId:{"inseedata20152017": "id"},
+        tiles:["https://www.comeetie.fr/tileserver-php/tileserver.php?/inseedata20152017allreg.json?/inseedata20152017allreg/{z}/{x}/{y}.pbf"],
+        promoteId:{"inseedata20152017allreg": "id"},
         maxzoom:11,
     })
 
@@ -361,7 +361,7 @@ Promise.all(promises).then(function(values){
               "id": l.name+"_"+l.year,
               "type": "fill",
               "source": "carreaux",
-              "source-layer": "inseedata20152017",
+              "source-layer": "inseedata20152017allreg",
               "paint": {
                   "fill-color":l.coloramp,
                   'fill-opacity': ['case',['boolean', ['feature-state', 'hover'], false],0.05,1],
