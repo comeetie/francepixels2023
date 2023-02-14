@@ -9,7 +9,7 @@ var mylayers = ["2015","2017"].map(year => ([
         year:year,
         visibility:'visible',
         text:`Niveau de vie moyen`,
-        unit:'Kilos Euros',
+        unit:'k €',
         format:function(d){return Math.round(d/1000)},
         group:"eco"
       },
@@ -22,7 +22,7 @@ var mylayers = ["2015","2017"].map(year => ([
       year :year,
       visibility:'visible',
       text:`Densité de population`,
-      unit:"Hab/Km2",
+      unit:"Hab/Km<span class='sup'>2</span>",
       format:function(d){return Math.round(d)},
       group:'pop'
     },

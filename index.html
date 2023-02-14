@@ -134,6 +134,7 @@
                         Couverture du sol
                       </label>
                     </div>
+                  </br>
                     Ajoutez votre propre couche de polygones :
                     <input type="file" id="file"name="file" accept="application/geo+json,application/vnd.geo+json,.geojson" />
             	</div>
@@ -147,7 +148,7 @@
               </div>
               </br>
                 source : @insee: (<a href="https://https://www.insee.fr/fr/statistiques/4176290?sommaire=4176305" style="display:inline">Filosofi 2015</a>,<a href="https://www.insee.fr/fr/statistiques/6215138?sommaire=6215217" style="display:inline"> Filosofi 2017</a>)</br>
-                <a href="https://mapstodon.space/@comeetie">by : @comeetie@mapstodon.space (2023)</a>
+                <a href="https://mapstodon.space/@comeetie">by : @comeetie(2023)</a>
               <div class="row">
                 <div class="col" id="sidebarClose-col">
                 <p style="text-align:center;margin-top:0.4em"><button class="btn btn-sm" href="#" role="button" id="sidebarClose">Ok</button></p>
@@ -175,6 +176,15 @@
     <!-- Bootstrap JS -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
     <!-- Main App -->
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.2.0/mapbox-gl-draw.js"></script>
+    <link
+    rel="stylesheet"
+    href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.2.0/mapbox-gl-draw.css"
+    type="text/css"
+    />
+    <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/arquero@latest"></script>
+
     <script src="assets/js/d3/d3.min.js"></script>
     <!--<script src='./assets/js/maplibre-gl.js'></script>-->
     <script src='https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js'></script>

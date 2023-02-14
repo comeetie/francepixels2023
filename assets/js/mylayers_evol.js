@@ -10,7 +10,7 @@ var mylayers_evol = [
         year:"evol",
         visibility:'visible',
         text:`Niveau de vie moyen`,
-        unit: 'Euros',
+        unit: '€',
         format:function(d){return Math.round(d)},
         group:"eco"
       },

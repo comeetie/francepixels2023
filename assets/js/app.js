@@ -1,7 +1,19 @@
 // clear ui
 document.getElementById("file").value = ""
 
-var map = new maplibregl.Map({
+
+d3.formatDefaultLocale({
+  "decimal": ",",
+  "thousands": "\u00a0",
+  "grouping": [3],
+  "currency": ["", "\u00a0€"],
+  "percent": "\u202f%"
+}
+);
+
+
+
+const map = new maplibregl.Map({
     container: 'map',
     style: 'omap_2023.json',
     //center: [55.3872228,-21.1349647],
@@ -23,6 +35,135 @@ var hoveredId = null;
 var nav = new maplibregl.NavigationControl();
 map.addControl(nav, 'top-right');
 
+
+const draw = new MapboxDraw({
+  displayControlsDefault: false,
+  // Select which mapbox-gl-draw control buttons to add to the map.
+  controls: {
+  polygon: true,
+  trash: true,
+  },
+  styles:  [
+    // ACTIVE (being drawn)
+    // line stroke
+    {
+        "id": "gl-draw-line",
+        "type": "line",
+        "filter": ["all", ["==", "$type", "LineString"], ["==", "active", "true"]],
+        "layout": {
+          "line-cap": "round",
+          "line-join": "round"
+        },
+        "paint": {
+          "line-color": "#D20C0C",
+          "line-dasharray": [0.2, 2],
+          "line-width": 2
+        }
+    },
+    // polygon fill
+    {
+      "id": "gl-draw-polygon-fill",
+      "type": "fill",
+      "filter": ["all", ["==", "$type", "Polygon"], ["==", "active", "true"]],
+      "paint": {
+        "fill-color": "#D20C0C",
+        "fill-outline-color": "#D20C0C",
+        "fill-opacity": 0.1
+      }
+    },
+    // polygon mid points
+    {
+      'id': 'gl-draw-polygon-midpoint',
+      'type': 'circle',
+      'filter': ['all',
+        ['==', '$type', 'Point'],
+        ['==', 'meta', 'midpoint']],
+      'paint': {
+        'circle-radius': 3,
+        'circle-color': '#D20C0C'
+      }
+    },
+    // polygon outline stroke
+    // This doesn't style the first edge of the polygon, which uses the line stroke styling instead
+    {
+      "id": "gl-draw-polygon-stroke-active",
+      "type": "line",
+      "filter": ["all", ["==", "$type", "Polygon"], ["==", "active", "true"]],
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "#D20C0C",
+        "line-dasharray": [0.2, 2],
+        "line-width": 2
+      }
+    },
+    // vertex point halos
+    {
+      "id": "gl-draw-polygon-and-line-vertex-halo-active",
+      "type": "circle",
+      "filter": ["all", ["==", "meta", "vertex"], ["==", "$type", "Point"], ["!=", "mode", "static"]],
+      "paint": {
+        "circle-radius": 5,
+        "circle-color": "#FFF"
+      }
+    },
+    // vertex points
+    {
+      "id": "gl-draw-polygon-and-line-vertex-active",
+      "type": "circle",
+      "filter": ["all", ["==", "meta", "vertex"], ["==", "$type", "Point"], ["!=", "mode", "static"]],
+      "paint": {
+        "circle-radius": 3,
+        "circle-color": "#D20C0C",
+      }
+    },
+
+    // INACTIVE (static, already drawn)
+    // line stroke
+    {
+        "id": "gl-draw-line-static",
+        "type": "line",
+        "filter": ["all", ["==", "$type", "LineString"], ["!=", "active", "true"]],
+        "layout": {
+          "line-cap": "round",
+          "line-join": "round"
+        },
+        "paint": {
+          "line-color": "#000",
+          "line-width": 1
+        }
+    },
+    // polygon fill
+    {
+      "id": "gl-draw-polygon-fill-static",
+      "type": "fill",
+      "filter": ["all", ["==", "$type", "Polygon"], ["!=", "active", "true"]],
+      "paint": {
+        "fill-color": "#000",
+        "fill-outline-color": "#000",
+        "fill-opacity": 0.01
+      }
+    },
+    // polygon outline
+    {
+      "id": "gl-draw-polygon-stroke-static",
+      "type": "line",
+      "filter": ["all", ["==", "$type", "Polygon"], ["!=", "active", "true"]],
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "#000",
+        "line-width": 1
+      }
+    }
+  ]
+});
+map.addControl(draw);
+map.on("draw.selectionchange",updateSelection)
 
 
 
@@ -170,7 +311,6 @@ Promise.all(promises).then(function(values){
 
     map.addSource('point',{
         type: 'vector',
-        //url: 'https://www.comeetie.fr/tileserver-php/tileserver.php?/inseedata20152017allregcircle.json',
         tiles:["https://www.comeetie.fr/tileserver-php/tileserver.php?/inseedata20152017allregcircle.json?/inseedata20152017allregcircle/{z}/{x}/{y}.pbf"],
         promoteId:{"inseedata20152017allregcircle": "id"},
         maxzoom:11,
@@ -178,9 +318,8 @@ Promise.all(promises).then(function(values){
 
     map.addSource('carreaux',{
         type: 'vector',
-        //url: 'https://www.comeetie.fr/tileserver-php/tileserver.php?/inseedata20152017allregcirclenew.json',
-        tiles:["https://www.comeetie.fr/tileserver-php/tileserver.php?/inseedata20152017allreg.json?/inseedata20152017allreg/{z}/{x}/{y}.pbf"],
-        promoteId:{"inseedata20152017allreg": "id"},
+        tiles:["https://www.comeetie.fr/tileserver-php/tileserver.php?/inseedata20152017.json?/inseedata20152017/{z}/{x}/{y}.pbf"],
+        promoteId:{"inseedata20152017": "id"},
         maxzoom:11,
     })
 
@@ -222,7 +361,7 @@ Promise.all(promises).then(function(values){
               "id": l.name+"_"+l.year,
               "type": "fill",
               "source": "carreaux",
-              "source-layer": "inseedata20152017allreg",
+              "source-layer": "inseedata20152017",
               "paint": {
                   "fill-color":l.coloramp,
                   'fill-opacity': ['case',['boolean', ['feature-state', 'hover'], false],0.05,1],
@@ -534,19 +673,12 @@ function handleFileSelect(evt) {
 		
 		console.log(geoJSONcontent)
 		
-		map.addLayer({
-			'id': 'uploaded-polygons',
-			'type': 'line',
-			'source': 'uploaded-source',
-			'paint': {
-				'line-color': '#444444',
-				'line-width':2.5,
-			},
-		// filter for (multi)polygons; for also displaying linestrings
-		// or points add more layers with different filters
-		'filter': ['==', '$type', 'Polygon']
-		});
-		
+
+    ids = geoJSONcontent.features.map(f=>
+      draw.add(f)
+    )
+    
+
 		// zoom
 		let coords = geoJSONcontent.features.filter( f=> f.geometry.type=="Polygon").map(f=>f.geometry.coordinates).flat().flat();
 		var bounds = coords.reduce(function (bounds, coord) {
@@ -566,3 +698,184 @@ function handleFileSelect(evt) {
 document
 .getElementById('file')
 .addEventListener('change', handleFileSelect, false);
+
+
+
+aq.addFunction("formatK", d3.format("$.4s"))
+aq.addFunction("formatP", d3.format(".1%"))
+aq.addFunction("formatM", d3.format(",.4r"))
+
+function updateSelection(e){
+  
+
+
+  if (e.features && e.features.length > 0) {
+    console.log(e)
+    let car =[]
+    if(document.getElementById('geomcheck').checked){
+      car=map.querySourceFeatures("point",{
+              sourceLayer: 'inseedata20152017allregcircle',
+              filter: ['all']
+      })
+    }else{
+          car=map.querySourceFeatures("carreaux",{
+              sourceLayer: 'inseedata20152017allreg',
+              filter: ['all']
+      })
+    }
+    cargeo = togeoJson(car).map(function(cc){point=turf.centroid(cc.geometry); point.properties=cc.properties; return point})
+    console.log(cargeo)
+    carin = turf.pointsWithinPolygon({type:"FeatureCollection",features:cargeo},{type:"FeatureCollection",features:e.features})
+    console.log(carin)
+
+
+    let tab=aq.from(carin.features.map(f=>f.properties))
+    let tab_sum_2017 = tab.rollup({
+      ind: d => aq.op.sum(d.ind_2017),
+      men: d => aq.op.sum(d.men_2017),
+      ind_snv: d => aq.op.sum(d.ind_snv_2017),
+      men_pauv: d => aq.op.sum(d.men_pauv_2017),
+      men_1ind: d => aq.op.sum(d.men_1ind_2017),
+      men_5ind: d => aq.op.sum(d.men_5ind_2017),
+      men_prop: d => aq.op.sum(d.men_prop_2017),
+      men_fmp: d => aq.op.sum(d.men_fmp_2017),
+      men_surf: d => aq.op.sum(d.men_surf_2017),
+      men_coll: d => aq.op.sum(d.men_coll_2017),
+      log_soc: d => aq.op.sum(d.log_soc_2017),
+      ind_0_3: d => aq.op.sum(d.ind_0_3_2017),
+      ind_4_5: d => aq.op.sum(d.ind_4_5_2017),
+      ind_6_10: d => aq.op.sum(d.ind_6_10_2017),
+      ind_11_17: d => aq.op.sum(d.ind_11_17_2017),
+      ind_18_24: d => aq.op.sum(d.ind_18_24_2017),
+      ind_25_39: d => aq.op.sum(d.ind_25_39_2017),
+      ind_40_54: d => aq.op.sum(d.ind_40_54_2017),
+      ind_55_64: d => aq.op.sum(d.ind_55_64_2017),
+      ind_65_79: d => aq.op.sum(d.ind_65_79_2017),
+      ind_80p: d => aq.op.sum(d.ind_80p_2017)}
+    ).derive({
+        "Habitants" : d=> aq.op.formatM(d.ind),
+        "Ménages" : d=> aq.op.formatM(d.men),
+        "Niveau de vie moyen" : d=> aq.op.formatK(d.ind_snv/d.ind),
+        "Ménages pauvre" : d=> aq.op.formatP(d.men_pauv/d.men),
+        "Familles monoparentales": d=> aq.op.formatP(d.men_fmp/d.men),
+        "Ménages de 5 ou plus": d=> aq.op.formatP(d.men_5ind/d.men),
+        "Ménages de 1 individus": d=> aq.op.formatP(d.men_1ind/d.men),
+        "Ménages propriétaires": d=> aq.op.formatP(d.men_prop/d.men),
+        "Logements collectifs": d=> aq.op.formatP(d.men_coll/d.men),
+        "Logements sociaux": d=> aq.op.formatP(d.log_soc/d.men),
+        "0 - 3 ans": d=> aq.op.formatP(d.ind_0_3/d.ind),
+        "4 - 5 ans": d=> aq.op.formatP(d.ind_4_5/d.ind),
+        "6 - 10 ans": d=> aq.op.formatP(d.ind_6_10/d.ind),
+        "11 - 17 ans": d=> aq.op.formatP(d.ind_11_17/d.ind),
+        "18 - 24 ans": d=> aq.op.formatP(d.ind_18_24/d.ind),
+        "25 - 39 ans": d=> aq.op.formatP(d.ind_25_39/d.ind),
+        "40 - 54 ans": d=> aq.op.formatP(d.ind_40_54/d.ind),
+        "55 - 64 ans": d=> aq.op.formatP(d.ind_55_64/d.ind),
+        "65 - 79 ans": d=> aq.op.formatP(d.ind_65_79/d.ind),
+        "Plus de 80 ans": d=> aq.op.formatP(d.ind_80p/d.ind),
+    }).select([
+         "Habitants","Ménages",
+        "Niveau de vie moyen",
+        "Ménages pauvre",
+        "Familles monoparentales",
+        "Ménages de 5 ou plus",
+        "Ménages de 1 individus",
+        "Ménages propriétaires",
+        "Logements collectifs",
+        "Logements sociaux",
+        "0 - 3 ans",
+        "4 - 5 ans",
+        "6 - 10 ans",
+        "11 - 17 ans",
+        "18 - 24 ans",
+        "25 - 39 ans",
+        "40 - 54 ans",
+        "55 - 64 ans",
+        "65 - 79 ans",
+        "Plus de 80 ans"])
+
+    let tab_sum_2015 = tab.rollup({
+      ind: d => aq.op.sum(d.ind_2015),
+      men: d => aq.op.sum(d.men_2015),
+      ind_snv: d => aq.op.sum(d.ind_snv_2015),
+      men_pauv: d => aq.op.sum(d.men_pauv_2015),
+      men_1ind: d => aq.op.sum(d.men_1ind_2015),
+      men_5ind: d => aq.op.sum(d.men_5ind_2015),
+      men_prop: d => aq.op.sum(d.men_prop_2015),
+      men_fmp: d => aq.op.sum(d.men_fmp_2015),
+      men_surf: d => aq.op.sum(d.men_surf_2015),
+      men_coll: d => aq.op.sum(d.men_coll_2015),
+      log_soc: d => aq.op.sum(d.log_soc_2015),
+      ind_0_3: d => aq.op.sum(d.ind_0_3_2015),
+      ind_4_5: d => aq.op.sum(d.ind_4_5_2015),
+      ind_6_10: d => aq.op.sum(d.ind_6_10_2015),
+      ind_11_17: d => aq.op.sum(d.ind_11_17_2015),
+      ind_18_24: d => aq.op.sum(d.ind_18_24_2015),
+      ind_25_39: d => aq.op.sum(d.ind_25_39_2015),
+      ind_40_54: d => aq.op.sum(d.ind_40_54_2015),
+      ind_55_64: d => aq.op.sum(d.ind_55_64_2015),
+      ind_65_79: d => aq.op.sum(d.ind_65_79_2015),
+      ind_80p: d => aq.op.sum(d.ind_80p_2015)}
+    ).derive({
+        "Habitants" : d=> aq.op.formatM(d.ind),
+        "Ménages" : d=> aq.op.formatM(d.men),
+        "Niveau de vie moyen" : d=> aq.op.formatK(d.ind_snv/d.ind),
+        "Ménages pauvre" : d=> aq.op.formatP(d.men_pauv/d.men),
+        "Familles monoparentales": d=> aq.op.formatP(d.men_fmp/d.men),
+        "Ménages de 5 ou plus": d=> aq.op.formatP(d.men_5ind/d.men),
+        "Ménages de 1 individus": d=> aq.op.formatP(d.men_1ind/d.men),
+        "Ménages propriétaires": d=> aq.op.formatP(d.men_prop/d.men),
+        "Logements collectifs": d=> aq.op.formatP(d.men_coll/d.men),
+        "Logements sociaux": d=> aq.op.formatP(d.log_soc/d.men),
+        "0 - 3 ans": d=> aq.op.formatP(d.ind_0_3/d.ind),
+        "4 - 5 ans": d=> aq.op.formatP(d.ind_4_5/d.ind),
+        "6 - 10 ans": d=> aq.op.formatP(d.ind_6_10/d.ind),
+        "11 - 17 ans": d=> aq.op.formatP(d.ind_11_17/d.ind),
+        "18 - 24 ans": d=> aq.op.formatP(d.ind_18_24/d.ind),
+        "25 - 39 ans": d=> aq.op.formatP(d.ind_25_39/d.ind),
+        "40 - 54 ans": d=> aq.op.formatP(d.ind_40_54/d.ind),
+        "55 - 64 ans": d=> aq.op.formatP(d.ind_55_64/d.ind),
+        "65 - 79 ans": d=> aq.op.formatP(d.ind_65_79/d.ind),
+        "Plus de 80 ans": d=> aq.op.formatP(d.ind_80p/d.ind),
+    }).select([
+         "Habitants","Ménages",
+        "Niveau de vie moyen",
+        "Ménages pauvre",
+        "Familles monoparentales",
+        "Ménages de 5 ou plus",
+        "Ménages de 1 individus",
+        "Ménages propriétaires",
+        "Logements collectifs",
+        "Logements sociaux",
+        "0 - 3 ans",
+        "4 - 5 ans",
+        "6 - 10 ans",
+        "11 - 17 ans",
+        "18 - 24 ans",
+        "25 - 39 ans",
+        "40 - 54 ans",
+        "55 - 64 ans",
+        "65 - 79 ans",
+        "Plus de 80 ans"])
+
+
+    console.log(tab_sum_2015)
+    console.log(tab_sum_2017)
+
+    let html = tab_sum_2015.fold(aq.range(0,20)).rename({value:"2015"}).join(tab_sum_2017.fold(aq.range(0,20)).rename({value:"2017"}),'key').rename({key:'Variables'}).toHTML() 
+
+    setTimeout(2000,popup(turf.center(e.features[0]).geometry.coordinates,html))
+
+  }
+ 
+}
+
+
+
+function popup(c,html){
+  console.log(html)
+  var po = new maplibregl.Popup({closeOnClick: false,maxWidth:'300px'})
+      .setLngLat(c)
+      .setHTML(html)
+      .addTo(map)
+}
