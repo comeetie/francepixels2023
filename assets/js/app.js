@@ -2,14 +2,10 @@
 document.getElementById("file").value = ""
 
 
-d3.formatDefaultLocale({
-  "decimal": ",",
-  "thousands": "\u00a0",
-  "grouping": [3],
-  "currency": ["", "\u00a0€"],
-  "percent": "\u202f%"
-}
-);
+
+aq.addFunction("formatK", formatK)
+aq.addFunction("formatP", formatP)
+aq.addFunction("formatM", formatM)
 
 
 
@@ -302,7 +298,7 @@ Promise.all(promises).then(function(values){
     ld.append("div").style("text-align","right").style("width","95%").append("label")
     	.attr("class","legend-label")
     	.attr("for",l.name+'_'+l.year)
-    	.text(` en (${l.unit})`)
+    	.html(` en (${l.unit})`)
   })
 
 
@@ -353,7 +349,8 @@ Promise.all(promises).then(function(values){
               "layout": {
                 "circle-sort-key":['*',['get',`${cdenom}_${cyear}`],-1],
                 "visibility": "visible"
-              }
+              },
+              filter:l.filter
           },'waterway');
 
 
@@ -371,6 +368,8 @@ Promise.all(promises).then(function(values){
               "layout": {
                 "visibility": "visible"
               }
+              ,
+              "filter":l.filter
           },'waterway');
 
 
@@ -431,7 +430,7 @@ Promise.all(promises).then(function(values){
     	  	.domain([l.nqt[0].start,l.nqt[l.nqt.length-1].start+l.nqt[l.nqt.length-1].width])
     	  	.range([-5,95])
     	  d3.select(`#cval-${l.name}_${l.year}`)
-    	  	.text(l.format(cval))
+    	  	.html(l.format_detail?l.format_detail(cval):l.format(cval))
     	  	.style("display","block")
     	  	.style("left",`${Math.max(Math.min(xc(cval),95),-5)}%`)
     	  d3.select(`#cvalarrow-${l.name}_${l.year}`)
@@ -701,9 +700,7 @@ document
 
 
 
-aq.addFunction("formatK", d3.format("$.4s"))
-aq.addFunction("formatP", d3.format(".1%"))
-aq.addFunction("formatM", d3.format(",.4r"))
+
 
 function updateSelection(e){
   

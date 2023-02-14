@@ -1,3 +1,16 @@
+d3.formatDefaultLocale({
+  "decimal": ",",
+  "thousands": "\u00a0",
+  "grouping": [3],
+  "currency": ["", "\u00a0€"],
+  "percent": "\u202f%"
+}
+);
+
+const formatK = d3.format("$.3s")
+const formatP = d3.format(".1%")
+const formatM = d3.format(",.4r")
+
 var mylayers = ["2015","2017"].map(year => ([
 
       {
@@ -10,8 +23,10 @@ var mylayers = ["2015","2017"].map(year => ([
         visibility:'visible',
         text:`Niveau de vie moyen`,
         unit:'k €',
+        format_detail:formatK,
         format:function(d){return Math.round(d/1000)},
-        group:"eco"
+        group:"eco",
+        filter:["!=",['get', `ind_${year}`],0]
       },
       {
       type: 'step',
@@ -23,8 +38,10 @@ var mylayers = ["2015","2017"].map(year => ([
       visibility:'visible',
       text:`Densité de population`,
       unit:"Hab/Km<span class='sup'>2</span>",
+      format_detail: formatM,
       format:function(d){return Math.round(d)},
-      group:'pop'
+      group:'pop',
+      filter:["!=",['get', 'area'],0]
     },
     {
       type: 'step',
@@ -36,8 +53,10 @@ var mylayers = ["2015","2017"].map(year => ([
       visibility:'visible',
       text:`Ménages pauvre`,
       unit:"%",
+      format_detail:formatP,
       format:function(d){return Math.round(d*100)},
-      group:'eco'
+      group:'eco',
+      filter:["!=",['get', `men_${year}`],0]
     },
       {
         type : 'step', 
@@ -49,8 +68,10 @@ var mylayers = ["2015","2017"].map(year => ([
         visibility:'visible',
         text:`Familles monoparentales`,
         unit:"%",
+        format_detail:formatP,
         format:function(d){return Math.round(d*100)},
-        group:'pop'
+        group:'pop',
+        filter:["!=",['get', `men_${year}`],0]
       },
       {
         type : 'step', 
@@ -62,8 +83,10 @@ var mylayers = ["2015","2017"].map(year => ([
         visibility:'visible',
         text:`Ménages de 5 individus ou plus`,
         unit:"%",
+        format_detail:formatP,
         format:function(d){return Math.round(d*100)},
-        group:'pop'
+        group:'pop',
+        filter:["!=",['get', `men_${year}`],0]
       },
       {
         type : 'step', 
@@ -75,8 +98,10 @@ var mylayers = ["2015","2017"].map(year => ([
         visibility:'visible',
         text:`Ménages de 1 individus`,
         unit:"%",
+        format_detail:formatP,
         format:function(d){return Math.round(d*100)},
-        group:'pop'
+        group:'pop',
+        filter:["!=",['get', `men_${year}`],0]
       },
   {
       type: 'step',
@@ -88,8 +113,10 @@ var mylayers = ["2015","2017"].map(year => ([
       visibility:'visible',
       text:`Ménages propriétaires`,
       unit:"%",
+      format_detail:formatP,
       format:function(d){return Math.round(d*100)},
-      group:'log'
+      group:'log',
+        filter:["!=",['get', `men_${year}`],0]
     },
   {
       type: 'step',
@@ -101,8 +128,11 @@ var mylayers = ["2015","2017"].map(year => ([
       visibility:'visible',
       text:`Ménages en logement collectifs`,
       unit:"%",
+      format_detail:formatP,
       format:function(d){return Math.round(d*100)},
-      group:'log'
+      group:'log',
+      filter:["!=",['get', `men_${year}`],0]
+     
     },
     {
       type: 'step',
@@ -114,8 +144,10 @@ var mylayers = ["2015","2017"].map(year => ([
       visibility:'visible',
       text:`Ménages en maison individuelle`,
       unit:"%",
+      format_detail:formatP,
       format:function(d){return Math.round(d*100)},
-      group:'log'
+      group:'log',
+      filter:["!=",['get', `men_${year}`],0]
     },
     {
       type: 'step',
@@ -127,8 +159,10 @@ var mylayers = ["2015","2017"].map(year => ([
       visibility:'visible',
       text:`Ménages en logement social`,
       unit:"%",
+      format_detail:formatP,
       format:function(d){return Math.round(d*100)},
-      group:'log'
+      group:'log',
+      filter:["!=",['get', `men_${year}`],0]
     },
     {
       type: 'step',
@@ -139,9 +173,10 @@ var mylayers = ["2015","2017"].map(year => ([
       cols: colorbrewer["YlGn"][8],
       visibility:'visible',
       text:`Surface moyenne des logements`,
-      unit:"m2",
+      unit:"m<span class='sup'>2</span>",
       format:function(d){return Math.round(d)},
-      group:'log'
+      group:'log',
+      filter:["!=",['get', `men_${year}`],0]
     },
 
     {
@@ -154,8 +189,10 @@ var mylayers = ["2015","2017"].map(year => ([
       visibility:'visible',
       text:`Logements construits avant 1945`,
       unit:"%",
+      format_detail:formatP,
       format:function(d){return Math.round(d*100)},
-      group:'log'
+      group:'log',
+      filter:["!=",['get', `men_${year}`],0]
     },
     {
       type: 'step',
@@ -167,8 +204,10 @@ var mylayers = ["2015","2017"].map(year => ([
       visibility:'visible',
       text:`Logements construits entre 1945 et 1970`,
       unit:"%",
+      format_detail:formatP,
       format:function(d){return Math.round(d*100)},
-      group:'log'
+      group:'log',
+      filter:["!=",['get', `men_${year}`],0]
     },
     {
       type: 'step',
@@ -180,8 +219,10 @@ var mylayers = ["2015","2017"].map(year => ([
       visibility:'visible',
       text:`Logements construits entre 1970 et 1990`,
       unit:"%",
+      format_detail:formatP,
       format:function(d){return Math.round(d*100)},
-      group:'log'
+      group:'log',
+      filter:["!=",['get', `men_${year}`],0]
     },
 
     {
@@ -194,8 +235,10 @@ var mylayers = ["2015","2017"].map(year => ([
       visibility:'visible',
       text:`Logements construits après 1990`,
       unit:"%",
+      format_detail:formatP,
       format:function(d){return Math.round(d*100)},
-      group:'log'
+      group:'log',
+      filter:["!=",['get', `men_${year}`],0]
     },
       {
         type : 'step',
@@ -207,8 +250,10 @@ var mylayers = ["2015","2017"].map(year => ([
         visibility:'visible',
         text:`0 - 3 ans`,
         unit:"%",
+        format_detail:formatP,
         format:function(d){return Math.round(d*1000)/10},
-        group:'pop'
+        group:'pop',
+      filter:["!=",['get', `ind_${year}`],0]
       },
       {
         type : 'step',
@@ -220,8 +265,10 @@ var mylayers = ["2015","2017"].map(year => ([
         visibility:'visible',
         text:`4 - 5 ans`,
         unit:"%",
+        format_detail:formatP,
         format:function(d){return Math.round(d*1000)/10},
-        group:'pop'
+        group:'pop',
+      filter:["!=",['get', `ind_${year}`],0]
       },
       {
         type : 'step',
@@ -233,8 +280,10 @@ var mylayers = ["2015","2017"].map(year => ([
         visibility:'visible',
         text:`6 - 10 ans`,
         unit:"%",
+        format_detail:formatP,
         format:function(d){return Math.round(d*1000)/10},
-        group:'pop'
+        group:'pop',
+      filter:["!=",['get', `ind_${year}`],0]
       },
       {
         type : 'step',
@@ -246,8 +295,10 @@ var mylayers = ["2015","2017"].map(year => ([
         visibility:'visible',
         text:`11 - 17 ans`,
         unit:"%",
+        format_detail:formatP,
         format:function(d){return Math.round(d*1000)/10},
-        group:'pop'
+        group:'pop',
+      filter:["!=",['get', `ind_${year}`],0]
       },
           {
         type : 'step',
@@ -260,7 +311,8 @@ var mylayers = ["2015","2017"].map(year => ([
         text:'18 - 24 ans',
         unit:"%",
         format:function(d){return Math.round(d*1000)/10},
-        group:'pop'
+        group:'pop',
+      filter:["!=",['get', `ind_${year}`],0]
       },
 
           {
@@ -273,8 +325,10 @@ var mylayers = ["2015","2017"].map(year => ([
         visibility:'visible',
         text:'25 - 39 ans',
         unit:"%",
+        format_detail:formatP,
         format:function(d){return Math.round(d*1000)/10},
-        group:'pop'
+        group:'pop',
+      filter:["!=",['get', `ind_${year}`],0]
       },
               {
         type : 'step',
@@ -286,8 +340,10 @@ var mylayers = ["2015","2017"].map(year => ([
         visibility:'visible',
         text:'40 - 54 ans',
         unit:"%",
+        format_detail:formatP,
         format:function(d){return Math.round(d*1000)/10},
-        group:'pop'
+        group:'pop',
+      filter:["!=",['get', `ind_${year}`],0]
       },
               {
         type : 'step',
@@ -299,8 +355,10 @@ var mylayers = ["2015","2017"].map(year => ([
         visibility:'visible',
         text:'55 - 64 ans',
         unit:"%",
+        format_detail:formatP,
         format:function(d){return Math.round(d*1000)/10},
-        group:'pop'
+        group:'pop',
+      filter:["!=",['get', `ind_${year}`],0]
       },
                     {
         type : 'step',
@@ -312,8 +370,10 @@ var mylayers = ["2015","2017"].map(year => ([
         visibility:'visible',
         text:'65 - 79 ans',
         unit:"%",
+        format_detail:formatP,
         format:function(d){return Math.round(d*1000)/10},
-        group:'pop'
+        group:'pop',
+      filter:["!=",['get', `ind_${year}`],0]
       },
       {
         type : 'step', 
@@ -325,8 +385,10 @@ var mylayers = ["2015","2017"].map(year => ([
         visibility:'visible',
         text:"Plus de 80 ans",
         unit:'%',
+        format_detail:formatP,
         format:function(d){return Math.round(d*1000)/10},
-        group:'pop'
+        group:'pop',
+      filter:["!=",['get', `ind_${year}`],0]
       }
 
 
