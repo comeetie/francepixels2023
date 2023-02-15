@@ -657,7 +657,9 @@ function handleFileSelect(evt) {
 	reader.onload = function (theFile) {
 		// Parse as (geo)JSON
 		var geoJSONcontent = JSON.parse(theFile.target.result);
-		 
+		// garde que les polygons et multi
+    geoJSONcontent.features = geoJSONcontent.features.filter( f=> f.geometry.type=="Polygon" | f.geometry.type=="MultiPolygon")
+
 		// Add as source to the map
 		if(!map.getSource("uploaded-source")){
 			map.addSource('uploaded-source', {
