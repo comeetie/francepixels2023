@@ -13,10 +13,10 @@ const map = new maplibregl.Map({
     container: 'map',
     style: 'omap_2023.json',
     //center: [55.3872228,-21.1349647],
-    center:[-61.1538584,14.6343799],
+    center:[2.3,47],
     minZoom: 2,
     maxZoom:18,
-    zoom: 9,
+    zoom: 5.7,
     hash:true
 });
 
